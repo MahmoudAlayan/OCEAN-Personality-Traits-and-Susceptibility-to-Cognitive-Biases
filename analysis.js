@@ -1,7 +1,10 @@
-ï»¿const byId = (id) => document.getElementById(id);
+const byId = (id) => document.getElementById(id);
 
 const API_BASE = "/api";
 const API_RESPONSES_ENDPOINT = `${API_BASE}/responses`;
+const MIN_CORR_N = 2;
+const FULL_REPORT_N = 60;
+const REFRESH_MS = 15000;
 
 const mean = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 const std = (arr) => {
@@ -118,9 +121,14 @@ const buildCorrelationMatrix = (variables, data) => {
 };
 
 const renderCorrelationChart = (traits, data) => {
+  const isMobile = window.innerWidth <= 640;
   const ctx = byId("corr-chart").getContext("2d");
-  const tickStyle = { color: "#ffffff", font: { weight: "700" } };
+  const tickStyle = { color: "#ffffff", font: { weight: "700", size: isMobile ? 10 : 12 } };
   const gridStyle = { color: "rgba(255, 255, 255, 0.08)" };
+  const labels = traits.map((trait) => trait.label.split(" "));
+
+  const chartCanvas = byId("corr-chart");
+  chartCanvas.height = isMobile ? 260 : 240;
 
   const anchoringValues = traits.map((trait) => {
     const x = data.map((entry) => trait.get(entry));
@@ -136,7 +144,7 @@ const renderCorrelationChart = (traits, data) => {
   new Chart(ctx, {
     type: "bar",
     data: {
-      labels: traits.map((trait) => trait.label),
+      labels: labels,
       datasets: [
         {
           label: "Anchoring",
@@ -151,6 +159,8 @@ const renderCorrelationChart = (traits, data) => {
       ]
     },
     options: {
+      indexAxis: isMobile ? "y" : "x",
+      maintainAspectRatio: false,
       scales: {
         x: { ticks: tickStyle, grid: gridStyle },
         y: { ticks: tickStyle, grid: gridStyle, min: -1, max: 1 }
@@ -183,9 +193,27 @@ const buildSummaryText = (variables, matrix) => {
   return `Strongest observed correlations: ${lines.join(" ")}`;
 };
 
+const buildStrengthSoFar = (matrix) => {
+  const values = [];
+  for (let traitIdx = 1; traitIdx <= 5; traitIdx += 1) {
+    values.push(matrix[traitIdx][6]);
+    values.push(matrix[traitIdx][7]);
+  }
+  const avgAbs = values.reduce((sum, r) => sum + Math.abs(r), 0) / values.length;
+  return {
+    avgAbs,
+    label: effectLabel(avgAbs)
+  };
+};
+
+const buildMeaningSoFar = (dataLength, strength) => {
+  const stability = dataLength < 15 ? "very preliminary" : dataLength < 30 ? "preliminary" : "more stable";
+  return `With N=${dataLength}, the average absolute correlation across trait–bias pairs is ${strength.avgAbs.toFixed(2)} (${strength.label}). These patterns are ${stability} and may change as more participants are added. Treat these results as descriptive and hypothesis-generating rather than definitive.`;
+};
+
 const buildInterpretation = (matrix, variables, sampleSize, meanAge) => {
   const lines = [];
-  lines.push(`<p>This analysis summarizes ${sampleSize} responses from participants aged 18ï¿½35 (mean age ${meanAge.toFixed(1)}). Associations are reported as Pearson correlations, which describe how two measures move together on average.</p>`);
+  lines.push(`<p>This analysis summarizes ${sampleSize} responses from participants aged 18–35 (mean age ${meanAge.toFixed(1)}). Associations are reported as Pearson correlations, which describe how two measures move together on average.</p>`);
   lines.push(`<p>Correlations near 0 indicate little linear relationship, while positive values indicate that higher scores on one measure tend to coincide with higher scores on the other. Negative values indicate the opposite. These are descriptive patterns and do not imply causality.</p>`);
 
   const anchoringIdx = variables.findIndex((v) => v.label === "Anchoring index");
@@ -209,7 +237,8 @@ const buildInterpretation = (matrix, variables, sampleSize, meanAge) => {
     lines.push(`<p>The strongest personality association with confirmation bias is ${top.trait} (r=${top.r.toFixed(2)}, ${effectLabel(top.r)}). This pattern is exploratory and may reflect how individuals evaluate evidence in brief tasks, not a stable judgment habit.</p>`);
   }
 
-  lines.push(`<p>Given the brief measures and convenience sampling, these results are best used to generate hypotheses rather than definitive conclusions. Larger samples and repeated measures would provide more stable estimates.</p>`);
+  lines.push(`<p>Hypothesis focus: whether Big Five traits predict susceptibility to anchoring and confirmation biases. Based on the current data, the evidence is ${sampleSize >= FULL_REPORT_N ? "sufficient for a cautious, preliminary evaluation" : "insufficient for firm conclusions"}; observed associations should be treated as exploratory until replicated with larger, more diverse samples and more precise measures.</p>`);
+  lines.push(`<p>Given the brief measures and convenience sampling, these results are best used to generate hypotheses rather than definitive conclusions. Larger samples, preregistered analyses, and repeated measures would provide more stable estimates.</p>`);
 
   return lines.join("");
 };
@@ -228,7 +257,7 @@ const buildFutureTopics = (matrix, variables) => {
   for (let i = 0; i < variables.length; i += 1) {
     for (let j = i + 1; j < variables.length; j += 1) {
       strongest.push({
-        pair: `${variables[i].label} ï¿½ ${variables[j].label}`,
+        pair: `${variables[i].label} × ${variables[j].label}`,
         r: matrix[i][j]
       });
     }
@@ -247,21 +276,15 @@ const buildFutureTopics = (matrix, variables) => {
   });
 };
 
-const init = async () => {
-  const responses = await fetchResponses();
-  const data = responses.filter((entry) => entry.demographics && entry.demographics.age >= 18 && entry.demographics.age <= 35);
-
-  if (data.length < 30) {
+const renderAnalysis = (data) => {
+  if (data.length === 0) {
     byId("analysis-empty").classList.remove("hidden");
     byId("analysis-content").classList.add("hidden");
-    byId("back-report").addEventListener("click", () => {
-      window.location.href = "report.html";
-    });
-    byId("back-survey").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
     return;
   }
+
+  byId("analysis-empty").classList.add("hidden");
+  byId("analysis-content").classList.remove("hidden");
 
   const variables = [
     { label: "Age", get: (r) => r.demographics.age },
@@ -285,8 +308,37 @@ const init = async () => {
   renderCorrelationChart(traitVars, data);
 
   byId("summary-text").textContent = buildSummaryText(variables, matrix);
-  byId("interpretation-text").innerHTML = buildInterpretation(matrix, variables, data.length, meanAge);
-  buildFutureTopics(matrix, variables);
+  const strength = buildStrengthSoFar(matrix);
+  byId("strength-summary").textContent = `Average absolute correlation (trait-bias pairs): ${strength.avgAbs.toFixed(2)} (${strength.label}).`;
+  byId("meaning-summary").textContent = buildMeaningSoFar(data.length, strength);
+
+  const page2 = byId("analysis-page-2");
+  const page2Note = byId("page2-note");
+  if (data.length < FULL_REPORT_N) {
+    page2.classList.add("hidden");
+    page2Note.textContent = `Full two-page interpretation unlocks at N=${FULL_REPORT_N} (current N=${data.length}).`;
+  } else {
+    page2.classList.remove("hidden");
+    page2Note.textContent = "";
+  }
+
+  if (data.length >= MIN_CORR_N) {
+    byId("interpretation-text").innerHTML = buildInterpretation(matrix, variables, data.length, meanAge);
+    buildFutureTopics(matrix, variables);
+  } else {
+    byId("interpretation-text").innerHTML = `<p>At least ${MIN_CORR_N} responses are needed to compute correlations. Descriptive statistics are shown above and will update as more data arrives.</p>`;
+  }
+};
+
+const init = async () => {
+  const update = async () => {
+    const responses = await fetchResponses();
+    const data = responses.filter((entry) => entry.demographics && entry.demographics.age >= 18 && entry.demographics.age <= 35);
+    renderAnalysis(data);
+  };
+
+  await update();
+  setInterval(update, REFRESH_MS);
 
   byId("back-report").addEventListener("click", () => {
     window.location.href = "report.html";
@@ -297,7 +349,3 @@ const init = async () => {
 };
 
 init();
-
-
-
-

@@ -81,6 +81,8 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
 
   const confirmCanvas = byId("confirm-chart");
   confirmCanvas.height = isMobile ? 260 : 160;
+  byId("bigfive-chart").height = isMobile ? 240 : 220;
+  byId("bias-chart").height = isMobile ? 240 : 220;
 
   if (window._charts) {
     window._charts.forEach((chart) => chart.destroy());
@@ -100,6 +102,7 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
+      maintainAspectRatio: false,
       scales: {
         x: { ticks: tickStyle, grid: gridStyle },
         y: { beginAtZero: true, max: 100, ticks: tickStyle, grid: gridStyle }
@@ -126,6 +129,7 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
+      maintainAspectRatio: false,
       scales: {
         x: { ticks: tickStyle, grid: gridStyle },
         y: { beginAtZero: true, max: 100, ticks: tickStyle, grid: gridStyle }
