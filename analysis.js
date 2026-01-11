@@ -1,4 +1,4 @@
-const byId = (id) => document.getElementById(id);
+ï»¿const byId = (id) => document.getElementById(id);
 
 const API_BASE = "/api";
 const API_RESPONSES_ENDPOINT = `${API_BASE}/responses`;
@@ -185,7 +185,7 @@ const buildSummaryText = (variables, matrix) => {
 
 const buildInterpretation = (matrix, variables, sampleSize, meanAge) => {
   const lines = [];
-  lines.push(`<p>This analysis summarizes ${sampleSize} responses from participants aged 18–35 (mean age ${meanAge.toFixed(1)}). Associations are reported as Pearson correlations, which describe how two measures move together on average.</p>`);
+  lines.push(`<p>This analysis summarizes ${sampleSize} responses from participants aged 18ï¿½35 (mean age ${meanAge.toFixed(1)}). Associations are reported as Pearson correlations, which describe how two measures move together on average.</p>`);
   lines.push(`<p>Correlations near 0 indicate little linear relationship, while positive values indicate that higher scores on one measure tend to coincide with higher scores on the other. Negative values indicate the opposite. These are descriptive patterns and do not imply causality.</p>`);
 
   const anchoringIdx = variables.findIndex((v) => v.label === "Anchoring index");
@@ -228,7 +228,7 @@ const buildFutureTopics = (matrix, variables) => {
   for (let i = 0; i < variables.length; i += 1) {
     for (let j = i + 1; j < variables.length; j += 1) {
       strongest.push({
-        pair: `${variables[i].label} × ${variables[j].label}`,
+        pair: `${variables[i].label} ï¿½ ${variables[j].label}`,
         r: matrix[i][j]
       });
     }
@@ -297,6 +297,7 @@ const init = async () => {
 };
 
 init();
+
 
 
 

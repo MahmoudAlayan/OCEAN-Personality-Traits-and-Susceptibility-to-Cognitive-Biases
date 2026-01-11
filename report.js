@@ -1,4 +1,4 @@
-const byId = (id) => document.getElementById(id);
+﻿const byId = (id) => document.getElementById(id);
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -72,10 +72,15 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
   const biasChart = byId("bias-chart").getContext("2d");
   const confirmChart = byId("confirm-chart").getContext("2d");
 
+  const isMobile = window.innerWidth <= 640;
   const theme = getChartTheme();
-  const tickStyle = { color: theme.tickColor, font: { weight: "700" } };
+  const tickStyle = { color: theme.tickColor, font: { weight: "700", size: isMobile ? 10 : 12 } };
   const gridStyle = { color: theme.gridColor };
   const legendStyle = { color: theme.tickColor, font: { weight: "700" } };
+  const confirmLabels = perTopic.map((item) => item.topic.split(" "));
+
+  const confirmCanvas = byId("confirm-chart");
+  confirmCanvas.height = isMobile ? 260 : 160;
 
   if (window._charts) {
     window._charts.forEach((chart) => chart.destroy());
@@ -137,7 +142,7 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
   window._charts.push(new Chart(confirmChart, {
     type: "bar",
     data: {
-      labels: perTopic.map((item) => item.topic),
+      labels: confirmLabels,
       datasets: [
         {
           label: "Confirmation bias index",
@@ -147,6 +152,8 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
+      indexAxis: isMobile ? "y" : "x",
+      maintainAspectRatio: false,
       scales: {
         x: { ticks: tickStyle, grid: gridStyle },
         y: { beginAtZero: true, ticks: tickStyle, grid: gridStyle }
@@ -332,7 +339,7 @@ const init = async () => {
     sampleNote.textContent = `Relative to current sample (N=${sampleData.length}). Percentiles shown as P values.`;
   }
 
-  const analysisReady = sampleData.length >= 30;
+  const analysisReady = sampleData.length >= 1;
   if (analysisReady) {
     const analysisBtn = byId("open-analysis");
     analysisBtn.classList.remove("hidden");
@@ -362,6 +369,7 @@ const init = async () => {
 };
 
 init();
+
 
 
 
