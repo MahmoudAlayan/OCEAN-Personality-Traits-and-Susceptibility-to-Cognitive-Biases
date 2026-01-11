@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Report | Personality & Biases Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PSY</div>
+      <div>
+        <div class="title">Personality & Biases Lab</div>
+        <div class="subtitle">Report overview</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="download-pdf" class="btn secondary">Download PDF</button>
+      <button id="export-json" class="btn ghost">Export JSON</button>
+      <button id="open-analysis" class="btn primary hidden">Open correlation analysis</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card report" id="report">
+      <div class="report-header">
+        <div>
+          <h2>Report</h2>
+          <p class="muted">Experimental summary. Interpret cautiously and avoid overgeneralization.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" id="back-to-survey">Back to survey</button>
+        </div>
+      </div>
+
+      <div class="grid three" id="summary-cards"></div>
+
+      <div class="grid two">
+        <div class="card inset">
+          <h3>Big Five profile</h3>
+          <canvas id="bigfive-chart" height="220"></canvas>
+          <p id="sample-note" class="muted"></p>
+        </div>
+        <div class="card inset">
+          <h3>Bias indices</h3>
+          <canvas id="bias-chart" height="220"></canvas>
+          <p class="muted">Higher anchoring index means estimates leaned closer to anchors. Confirmation index reflects relative strength ratings for confirming vs disconfirming evidence.</p>
+        </div>
+      </div>
+
+      <div class="card inset">
+        <h3>Confirmation bias by topic</h3>
+        <canvas id="confirm-chart" height="160"></canvas>
+      </div>
+
+      <div class="card inset">
+        <h3>Interpretation (non-diagnostic)</h3>
+        <div id="interpretation" class="interpretation"></div>
+      </div>
+
+      <div class="card inset">
+        <h3>Evidence-based debiasing tips</h3>
+        <ul class="tips">
+          <li>Generate counter-explanations and look for disconfirming information before deciding.</li>
+          <li>Use numeric anchors only as starting points; deliberately estimate without them first.</li>
+          <li>Slow down high-stakes judgments and check for alternative interpretations.</li>
+          <li>Seek structured feedback and compare against objective benchmarks when available.</li>
+        </ul>
+        <h4 class="subhead">Suggested topics to explore</h4>
+        <ul id="research-topics" class="tips"></ul>
+        <p class="muted">These topics are general learning directions, not personalized advice.</p>
+        <p class="muted">References: Tversky & Kahneman, 1974; Nickerson, 1998; Stanovich & West, 2008.</p>
+      </div>
+
+      <div class="card inset">
+        <h3>Limitations</h3>
+        <p>Self-selection bias, small sample size, and the exploratory nature of this portfolio study limit generalizability. Results should be treated as descriptive, not causal or diagnostic.</p>
+      </div>
+    </section>
+
+    <section id="no-report" class="card hidden">
+      <h2>No report data found</h2>
+      <p class="muted">Please complete the survey first so the report can be generated.</p>
+      <button class="btn primary" id="start-survey">Start survey</button>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="report.js"></script>
+</body>
+</html>

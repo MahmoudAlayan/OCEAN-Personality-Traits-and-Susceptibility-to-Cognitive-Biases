@@ -1,0 +1,155 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bias & Personality Portfolio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PSY</div>
+      <div>
+        <div class="title">Personality & Biases Lab</div>
+        <div class="subtitle">Portfolio study prototype</div>
+      </div>
+    </div>
+    <div class="progress">
+      <div class="progress-labels">
+        <span>Consent</span>
+        <span>Demographics</span>
+        <span>Big Five</span>
+        <span>Tasks</span>
+        <span>Report</span>
+      </div>
+      <div class="progress-track">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="step-0" class="step">
+      <div class="card">
+        <h1>Informed consent</h1>
+        <p class="lead">This project explores whether Big Five traits predict susceptibility to anchoring and confirmation biases. You will complete a brief personality inventory, engage in bias tasks, and then view a statistical report based on your responses - It is not a diagnostic tool and does not provide medical or clinical advice.</p>
+        <div class="notice">
+          <p><strong>Privacy note:</strong> No names or emails are collected. Age is restricted to 18-35. You can download your data at the end. If data collection is enabled, only anonymized, aggregated results may be used for portfolio research.</p>
+        </div>
+        <label class="check">
+          <input id="consent-check" type="checkbox" />
+          <span>I am 18-35 years old, I understand the study purpose, and I consent to participate.</span>
+        </label>
+        <div class="actions">
+          <button class="btn primary" id="consent-next">Continue</button>
+        </div>
+        <p class="error" id="consent-error" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="step-1" class="step hidden">
+      <div class="card">
+        <h2>Demographics</h2>
+        <p class="lead">This project explores whether Big Five traits predict susceptibility to anchoring and confirmation biases. You will complete a brief personality inventory, engage in two bias tasks, and then view a statistical report based on your responses - It is not a diagnostic tool and does not provide medical or clinical advice.</p>
+        <div class="grid two">
+          <label>
+            Age (18-35)*
+            <input id="age" type="number" min="18" max="35" placeholder="e.g., 24" required />
+          </label>
+          <label>
+            Gender (optional)
+            <select id="gender">
+              <option value="">Prefer not to say</option>
+              <option>Woman</option>
+              <option>Man</option>
+              <option>Non-binary</option>
+              <option>Self-describe</option>
+            </select>
+          </label>
+          <label>
+            Education (optional)
+            <select id="education">
+              <option value="">Prefer not to say</option>
+              <option>High school</option>
+              <option>Bachelor</option>
+              <option>Master</option>
+              <option>Doctorate</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            Country (optional)
+            <input id="country" type="text" placeholder="e.g., Germany" />
+          </label>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" data-back="0">Back</button>
+          <button class="btn primary" id="demo-next">Continue</button>
+        </div>
+        <p class="error" id="demo-error" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="step-2" class="step hidden">
+      <div class="card">
+        <h2>Big Five personality (IPIP-20)</h2>
+        <p class="lead">This project explores whether Big Five traits predict susceptibility to anchoring and confirmation biases. You will complete a brief personality inventory, engage in two bias tasks, and then view a statistical report based on your responses - It is not a diagnostic tool and does not provide medical or clinical advice.</p>
+        <div class="likert-scale">
+          <span>Strongly disagree</span>
+          <span>Disagree</span>
+          <span>Neutral</span>
+          <span>Agree</span>
+          <span>Strongly agree</span>
+        </div>
+        <div id="bigfive-list" class="question-list"></div>
+        <div class="actions">
+          <button class="btn ghost" data-back="1">Back</button>
+          <button class="btn primary" id="bigfive-next">Continue</button>
+        </div>
+        <p class="error" id="bigfive-error" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="step-3" class="step hidden">
+      <div class="card">
+        <h2>Cognitive bias tasks</h2>
+        <p class="lead">This project explores whether Big Five traits predict susceptibility to anchoring and confirmation biases. You will complete a brief personality inventory, engage in two bias tasks, and then view a statistical report based on your responses - It is not a diagnostic tool and does not provide medical or clinical advice.</p>
+        <div class="task-block">
+          <h3>Anchoring task</h3>
+          <p>For each item, first decide whether the true value is higher or lower than the anchor. Then provide your best estimate.</p>
+          <div id="anchoring-list" class="question-list"></div>
+        </div>
+        <div class="task-block">
+          <h3>Confirmation-bias task</h3>
+          <p>Read each evidence snippet and rate how strong it seems. The snippets are balanced and non-political.</p>
+          <div id="confirmation-list"></div>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" data-back="2">Back</button>
+          <button class="btn primary" id="analyze">Analyze</button>
+        </div>
+        <p class="error" id="tasks-error" aria-live="polite"></p>
+      </div>
+      <div class="card subtle">
+        <button id="demo-toggle" class="btn ghost small">Show demo tools</button>
+        <div id="demo-tools" class="hidden">
+          <p class="muted">Fill plausible responses to preview the report quickly.</p>
+          <button id="demo-fill" class="btn secondary">Fill demo data</button>
+        </div>
+      </div>
+    </section></main><script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

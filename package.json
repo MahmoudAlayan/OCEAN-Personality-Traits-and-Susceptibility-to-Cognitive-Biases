@@ -1,0 +1,8 @@
+{
+  "name": "personality-biases-portfolio",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/postgres": "^0.7.2"
+  }
+}

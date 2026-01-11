@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Overall Correlation Analysis in Participants</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">PSY</div>
+      <div>
+        <div class="title">Overall Correlation Analysis in Participants</div>
+        <div class="subtitle">Exploratory summary of accumulated responses</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="back-report" class="btn ghost">Back to report</button>
+      <button id="back-survey" class="btn primary">Back to survey</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="analysis-empty" class="card hidden">
+      <h2>Not enough data yet</h2>
+      <p class="muted">At least 30 responses from participants aged 18-35 are required to generate the correlation analysis.</p>
+    </section>
+
+    <section id="analysis-content" class="report">
+      <div class="card page">
+        <h2>Page 1 -  Sample overview and correlations</h2>
+        <p id="sample-info" class="muted"></p>
+
+        <div class="grid two">
+          <div class="card inset">
+            <h3>Descriptive statistics</h3>
+            <div class="table-wrap">
+              <table id="desc-table"></table>
+            </div>
+          </div>
+          <div class="card inset">
+            <h3>Trait - bias correlations</h3>
+            <canvas id="corr-chart" height="240"></canvas>
+            <p class="muted">Bars show Pearson r between Big Five traits and bias indices (anchoring, confirmation).</p>
+          </div>
+        </div>
+
+        <div class="card inset">
+          <h3>Correlation matrix (Pearson r)</h3>
+          <div class="table-wrap">
+            <table id="corr-table"></table>
+          </div>
+          <p id="summary-text" class="muted"></p>
+        </div>
+      </div>
+
+      <div class="card page">
+        <h2>Page 2 - Interpretation and scholarly reflection</h2>
+        <div id="interpretation-text" class="interpretation"></div>
+        <div class="card inset">
+          <h3>Suggested directions for further research</h3>
+          <ul id="future-topics" class="tips"></ul>
+        </div>
+        <div class="card inset">
+          <h3>Methodological notes and limitations</h3>
+          <p class="muted">This analysis is exploratory, correlational, and based on a convenience sample. Correlations do not imply causation, and effect sizes may shift with broader or more diverse samples. Measures are brief, and the bias tasks are experimental; results should be interpreted as descriptive patterns rather than definitive psychological traits.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="analysis.js"></script>
+</body>
+</html>
