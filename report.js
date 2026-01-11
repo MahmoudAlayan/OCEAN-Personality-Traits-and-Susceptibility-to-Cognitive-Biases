@@ -80,9 +80,15 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
   const confirmLabels = perTopic.map((item) => item.topic.split(" "));
 
   const confirmCanvas = byId("confirm-chart");
-  confirmCanvas.height = isMobile ? 260 : 160;
-  byId("bigfive-chart").height = isMobile ? 240 : 220;
-  byId("bias-chart").height = isMobile ? 240 : 220;
+  confirmCanvas.height = isMobile ? 200 : 160;
+  byId("bigfive-chart").height = isMobile ? 180 : 220;
+  byId("bias-chart").height = isMobile ? 180 : 220;
+  const baseOptions = {
+    responsive: true,
+    maintainAspectRatio: !isMobile,
+    aspectRatio: isMobile ? 1.6 : 2,
+    layout: { padding: { left: 6, right: 6, top: 4, bottom: 8 } }
+  };
 
   if (window._charts) {
     window._charts.forEach((chart) => chart.destroy());
@@ -102,9 +108,9 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
-      maintainAspectRatio: false,
+      ...baseOptions,
       scales: {
-        x: { ticks: tickStyle, grid: gridStyle },
+        x: { ticks: { ...tickStyle, maxRotation: 0, autoSkip: true }, grid: gridStyle },
         y: { beginAtZero: true, max: 100, ticks: tickStyle, grid: gridStyle }
       },
       plugins: {
@@ -129,9 +135,9 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
-      maintainAspectRatio: false,
+      ...baseOptions,
       scales: {
-        x: { ticks: tickStyle, grid: gridStyle },
+        x: { ticks: { ...tickStyle, maxRotation: 0, autoSkip: false }, grid: gridStyle },
         y: { beginAtZero: true, max: 100, ticks: tickStyle, grid: gridStyle }
       },
       plugins: {
@@ -156,8 +162,8 @@ const renderCharts = (scores, anchoringIndex, confirmIndex, perTopic) => {
       ]
     },
     options: {
+      ...baseOptions,
       indexAxis: isMobile ? "y" : "x",
-      maintainAspectRatio: false,
       scales: {
         x: { ticks: tickStyle, grid: gridStyle },
         y: { beginAtZero: true, ticks: tickStyle, grid: gridStyle }
